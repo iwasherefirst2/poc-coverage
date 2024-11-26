@@ -4,9 +4,11 @@ services:
   php:
     build:
       context: .
+      args:
+        USER_ID: ${UID:-1000}  # Use UID from env or default to 1000
+        GROUP_ID: ${GID:-1000} # Use GID from env or default to 1000
     volumes:
       - .:/app
-    working_dir: /app
     tty: true
     environment:
       XDEBUG_MODE: coverage

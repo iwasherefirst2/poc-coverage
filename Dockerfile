@@ -11,8 +11,16 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-enable xdebug
 
 # Configure Xdebug for coverage
-RUN echo "zend_extension=xdebug.so" >> /usr/local/etc/php/conf.d/xdebug.ini && \
-    echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/xdebug.ini
+RUN echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/xdebug.ini
+
+# Create a user with the same UID and GID as the host
+ARG USER_ID
+ARG GROUP_ID
+RUN groupadd -g ${GROUP_ID} developer && \
+    useradd -m -u ${USER_ID} -g developer developer
+
+# Switch to the developer user
+USER developer
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
